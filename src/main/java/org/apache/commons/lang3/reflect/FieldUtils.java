@@ -31,21 +31,6 @@ public class FieldUtils {
     public static Field getField(final Class<?> cls, final String fieldName, final boolean forceAccess) {
         Validate.isTrue(cls != null, "The class must not be null");
         Validate.isTrue(StringUtils.isNotBlank(fieldName), "The field name must not be blank/empty");
-        // FIXME is this workaround still needed? lang requires Java 6
-        // Sun Java 1.3 has a bugged implementation of getField hence we write the
-        // code ourselves
-
-        // getField() will return the Field object with the declaring class
-        // set correctly to the class that declares the field. Thus requesting the
-        // field on a subclass will return the field from the superclass.
-        //
-        // priority order for lookup:
-        // searchclass private/protected/package/public
-        // superclass protected/package/public
-        // private/different package blocks access to further superclasses
-        // implementedinterface public
-
-        // check up the superclass hierarchy
         for (Class<?> acls = cls; acls != null; acls = acls.getSuperclass()) {
             try {
                 final Field field = acls.getDeclaredField(fieldName);
@@ -63,9 +48,6 @@ public class FieldUtils {
                 // ignore
             }
         }
-        // check the public interface case. This must be manually searched for
-        // incase there is a public supersuperclass field hidden by a private/package
-        // superclass field.
         Field match = null;
         for (final Class<?> class1 : ClassUtils.getAllInterfaces(cls)) {
             try {

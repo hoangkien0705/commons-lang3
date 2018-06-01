@@ -25,108 +25,34 @@ import java.util.TimeZone;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
 
-/**
- * <p>Duration formatting utilities and constants. The following table describes the tokens
- * used in the pattern language for formatting.</p>
- * <table border="1">
- *  <caption>Pattern Tokens</caption>
- *  <tr><th>character</th><th>duration element</th></tr>
- *  <tr><td>y</td><td>years</td></tr>
- *  <tr><td>M</td><td>months</td></tr>
- *  <tr><td>d</td><td>days</td></tr>
- *  <tr><td>H</td><td>hours</td></tr>
- *  <tr><td>m</td><td>minutes</td></tr>
- *  <tr><td>s</td><td>seconds</td></tr>
- *  <tr><td>S</td><td>milliseconds</td></tr>
- *  <tr><td>'text'</td><td>arbitrary text content</td></tr>
- * </table>
- *
- * <b>Note: It's not currently possible to include a single-quote in a format.</b>
- * <br>
- * Token values are printed using decimal digits.
- * A token character can be repeated to ensure that the field occupies a certain minimum
- * size. Values will be left-padded with 0 unless padding is disabled in the method invocation.
- * @since 2.1
- */
+
 public class DurationFormatUtils {
 
-    /**
-     * <p>DurationFormatUtils instances should NOT be constructed in standard programming.</p>
-     *
-     * <p>This constructor is public to permit tools that require a JavaBean instance
-     * to operate.</p>
-     */
+    
     public DurationFormatUtils() {
         super();
     }
 
-    /**
-     * <p>Pattern used with <code>FastDateFormat</code> and <code>SimpleDateFormat</code>
-     * for the ISO 8601 period format used in durations.</p>
-     *
-     * @see org.apache.commons.lang3.time.FastDateFormat
-     * @see java.text.SimpleDateFormat
-     */
+    
     public static final String ISO_EXTENDED_FORMAT_PATTERN = "'P'yyyy'Y'M'M'd'DT'H'H'm'M's.SSS'S'";
 
     //-----------------------------------------------------------------------
-    /**
-     * <p>Formats the time gap as a string.</p>
-     *
-     * <p>The format used is ISO 8601-like: {@code HH:mm:ss.SSS}.</p>
-     *
-     * @param durationMillis  the duration to format
-     * @return the formatted duration, not null
-     * @throws java.lang.IllegalArgumentException if durationMillis is negative
-     */
+    
     public static String formatDurationHMS(final long durationMillis) {
         return formatDuration(durationMillis, "HH:mm:ss.SSS");
     }
 
-    /**
-     * <p>Formats the time gap as a string.</p>
-     *
-     * <p>The format used is the ISO 8601 period format.</p>
-     *
-     * <p>This method formats durations using the days and lower fields of the
-     * ISO format pattern, such as P7D6TH5M4.321S.</p>
-     *
-     * @param durationMillis  the duration to format
-     * @return the formatted duration, not null
-     * @throws java.lang.IllegalArgumentException if durationMillis is negative
-     */
+    
     public static String formatDurationISO(final long durationMillis) {
         return formatDuration(durationMillis, ISO_EXTENDED_FORMAT_PATTERN, false);
     }
 
-    /**
-     * <p>Formats the time gap as a string, using the specified format, and padding with zeros.</p>
-     *
-     * <p>This method formats durations using the days and lower fields of the
-     * format pattern. Months and larger are not used.</p>
-     *
-     * @param durationMillis  the duration to format
-     * @param format  the way in which to format the duration, not null
-     * @return the formatted duration, not null
-     * @throws java.lang.IllegalArgumentException if durationMillis is negative
-     */
+    
     public static String formatDuration(final long durationMillis, final String format) {
         return formatDuration(durationMillis, format, true);
     }
 
-    /**
-     * <p>Formats the time gap as a string, using the specified format.
-     * Padding the left hand side of numbers with zeroes is optional.</p>
-     *
-     * <p>This method formats durations using the days and lower fields of the
-     * format pattern. Months and larger are not used.</p>
-     *
-     * @param durationMillis  the duration to format
-     * @param format  the way in which to format the duration, not null
-     * @param padWithZeros  whether to pad the left hand side of numbers with 0's
-     * @return the formatted duration, not null
-     * @throws java.lang.IllegalArgumentException if durationMillis is negative
-     */
+    
     public static String formatDuration(final long durationMillis, final String format, final boolean padWithZeros) {
         Validate.inclusiveBetween(0, Long.MAX_VALUE, durationMillis, "durationMillis must not be negative");
 
@@ -158,18 +84,7 @@ public class DurationFormatUtils {
         return format(tokens, 0, 0, days, hours, minutes, seconds, milliseconds, padWithZeros);
     }
 
-    /**
-     * <p>Formats an elapsed time into a pluralization correct string.</p>
-     *
-     * <p>This method formats durations using the days and lower fields of the
-     * format pattern. Months and larger are not used.</p>
-     *
-     * @param durationMillis  the elapsed time to report in milliseconds
-     * @param suppressLeadingZeroElements  suppresses leading 0 elements
-     * @param suppressTrailingZeroElements  suppresses trailing 0 elements
-     * @return the formatted text in days/hours/minutes/seconds, not null
-     * @throws java.lang.IllegalArgumentException if durationMillis is negative
-     */
+    
     public static String formatDurationWords(
         final long durationMillis,
         final boolean suppressLeadingZeroElements,
@@ -224,58 +139,17 @@ public class DurationFormatUtils {
     }
 
     //-----------------------------------------------------------------------
-    /**
-     * <p>Formats the time gap as a string.</p>
-     *
-     * <p>The format used is the ISO 8601 period format.</p>
-     *
-     * @param startMillis  the start of the duration to format
-     * @param endMillis  the end of the duration to format
-     * @return the formatted duration, not null
-     * @throws java.lang.IllegalArgumentException if startMillis is greater than endMillis
-     */
+    
     public static String formatPeriodISO(final long startMillis, final long endMillis) {
         return formatPeriod(startMillis, endMillis, ISO_EXTENDED_FORMAT_PATTERN, false, TimeZone.getDefault());
     }
 
-    /**
-     * <p>Formats the time gap as a string, using the specified format.
-     * Padding the left hand side of numbers with zeroes is optional.
-     *
-     * @param startMillis  the start of the duration
-     * @param endMillis  the end of the duration
-     * @param format  the way in which to format the duration, not null
-     * @return the formatted duration, not null
-     * @throws java.lang.IllegalArgumentException if startMillis is greater than endMillis
-     */
+    
     public static String formatPeriod(final long startMillis, final long endMillis, final String format) {
         return formatPeriod(startMillis, endMillis, format, true, TimeZone.getDefault());
     }
 
-    /**
-     * <p>Formats the time gap as a string, using the specified format.
-     * Padding the left hand side of numbers with zeroes is optional and
-     * the timezone may be specified. </p>
-     *
-     * <p>When calculating the difference between months/days, it chooses to
-     * calculate months first. So when working out the number of months and
-     * days between January 15th and March 10th, it choose 1 month and
-     * 23 days gained by choosing January-&gt;February = 1 month and then
-     * calculating days forwards, and not the 1 month and 26 days gained by
-     * choosing March -&gt; February = 1 month and then calculating days
-     * backwards. </p>
-     *
-     * <p>For more control, the <a href="http://joda-time.sf.net/">Joda-Time</a>
-     * library is recommended.</p>
-     *
-     * @param startMillis  the start of the duration
-     * @param endMillis  the end of the duration
-     * @param format  the way in which to format the duration, not null
-     * @param padWithZeros  whether to pad the left hand side of numbers with 0's
-     * @param timezone  the millis are defined in
-     * @return the formatted duration, not null
-     * @throws java.lang.IllegalArgumentException if startMillis is greater than endMillis
-     */
+    
     public static String formatPeriod(final long startMillis, final long endMillis, final String format, final boolean padWithZeros,
             final TimeZone timezone) {
         Validate.isTrue(startMillis <= endMillis, "startMillis must not be greater than endMillis");
@@ -409,20 +283,7 @@ public class DurationFormatUtils {
     }
 
     //-----------------------------------------------------------------------
-    /**
-     * <p>The internal method to do the formatting.</p>
-     *
-     * @param tokens  the tokens
-     * @param years  the number of years
-     * @param months  the number of months
-     * @param days  the number of days
-     * @param hours  the number of hours
-     * @param minutes  the number of minutes
-     * @param seconds  the number of seconds
-     * @param milliseconds  the number of millis
-     * @param padWithZeros  whether to pad
-     * @return the formatted string
-     */
+    
     static String format(final Token[] tokens, final long years, final long months, final long days, final long hours, final long minutes, final long seconds,
             final long milliseconds, final boolean padWithZeros) {
         final StringBuilder buffer = new StringBuilder();
@@ -466,15 +327,7 @@ public class DurationFormatUtils {
         return buffer.toString();
     }
 
-    /**
-     * <p>Converts a {@code long} to a {@code String} with optional
-     * zero padding.</p>
-     *
-     * @param value the value to convert
-     * @param padWithZeros whether to pad with zeroes
-     * @param count the size to pad to (ignored if {@code padWithZeros} is false)
-     * @return the string result
-     */
+    
     private static String paddedValue(final long value, final boolean padWithZeros, final int count) {
         final String longString = Long.toString(value);
         return padWithZeros ? StringUtils.leftPad(longString, count, '0') : longString;
@@ -488,12 +341,7 @@ public class DurationFormatUtils {
     static final Object s = "s";
     static final Object S = "S";
 
-    /**
-     * Parses a classic date format string into Tokens
-     *
-     * @param format  the format to parse, not null
-     * @return array of Token[]
-     */
+    
     static Token[] lexx(final String format) {
         final ArrayList<Token> list = new ArrayList<>(format.length());
 
@@ -568,18 +416,10 @@ public class DurationFormatUtils {
     }
 
     //-----------------------------------------------------------------------
-    /**
-     * Element that is parsed from the format pattern.
-     */
+    
     static class Token {
 
-        /**
-         * Helper method to determine if a set of tokens contain a value
-         *
-         * @param tokens set to look in
-         * @param value to look for
-         * @return boolean <code>true</code> if contained
-         */
+        
         static boolean containsTokenWithValue(final Token[] tokens, final Object value) {
             for (final Token token : tokens) {
                 if (token.getValue() == value) {
@@ -592,59 +432,34 @@ public class DurationFormatUtils {
         private final Object value;
         private int count;
 
-        /**
-         * Wraps a token around a value. A value would be something like a 'Y'.
-         *
-         * @param value to wrap
-         */
+        
         Token(final Object value) {
             this.value = value;
             this.count = 1;
         }
 
-        /**
-         * Wraps a token around a repeated number of a value, for example it would
-         * store 'yyyy' as a value for y and a count of 4.
-         *
-         * @param value to wrap
-         * @param count to wrap
-         */
+        
         Token(final Object value, final int count) {
             this.value = value;
             this.count = count;
         }
 
-        /**
-         * Adds another one of the value
-         */
+        
         void increment() {
             count++;
         }
 
-        /**
-         * Gets the current number of values represented
-         *
-         * @return int number of values represented
-         */
+        
         int getCount() {
             return count;
         }
 
-        /**
-         * Gets the particular value this token represents.
-         *
-         * @return Object value
-         */
+        
         Object getValue() {
             return value;
         }
 
-        /**
-         * Supports equality of this Token to another Token.
-         *
-         * @param obj2 Object to consider equality of
-         * @return boolean <code>true</code> if equal
-         */
+        
         @Override
         public boolean equals(final Object obj2) {
             if (obj2 instanceof Token) {
@@ -666,23 +481,13 @@ public class DurationFormatUtils {
             return false;
         }
 
-        /**
-         * Returns a hash code for the token equal to the
-         * hash code for the token's value. Thus 'TT' and 'TTTT'
-         * will have the same hash code.
-         *
-         * @return The hash code for the token
-         */
+        
         @Override
         public int hashCode() {
             return this.value.hashCode();
         }
 
-        /**
-         * Represents this token as a String.
-         *
-         * @return String representation of the token
-         */
+        
         @Override
         public String toString() {
             return StringUtils.repeat(this.value.toString(), this.count);
